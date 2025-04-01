@@ -43,7 +43,7 @@ export default function Login() {
     <View style={styles.container}>
       {alertVisible && (
         <Animated.View style={[styles.alertBox, { opacity: fadeAnim }]}> 
-          <Text style={styles.alertText}>Você deve concordar com os termos de uso!</Text>
+          <Text style={styles.alertText}>Você deve concordar com os Termos & Condições!</Text>
         </Animated.View>
       )}
 
@@ -73,19 +73,21 @@ export default function Login() {
         </TouchableOpacity>
       </View>
 
-      {/* Checkbox de termos de uso */}
       <View style={styles.checkboxContainer}>
-        <Checkbox
-          value={isChecked}
-          onValueChange={setIsChecked}
-          color={isChecked ? "#2B6CB0" : undefined}
-        />
-        <Text style={styles.checkboxText}>
-          Eu li e concordo com os <Text style={styles.termsText}>termos de uso.</Text>
-        </Text>
-      </View>
+  <Checkbox 
+    value={isChecked} 
+    onValueChange={setIsChecked} 
+    color={isChecked ? '#2B6CB0' : undefined} 
+  />
+  <Text style={styles.checkboxText}>
+    Concordo com os{' '}
+    <TouchableOpacity onPress={() => router.push('/termos')}>
+      <Text style={styles.termsText}>Termos & Condições</Text>
+    </TouchableOpacity>
+  </Text>
+</View>
 
-      <TouchableOpacity>
+      <TouchableOpacity onPress={() => router.push('/esqueci-senha')}>
         <Text style={styles.forgotPassword}>ESQUECI MINHA SENHA</Text>
       </TouchableOpacity>
 

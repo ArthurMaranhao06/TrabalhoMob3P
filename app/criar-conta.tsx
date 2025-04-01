@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Animated } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Animated, Image } from 'react-native';
 import { useRouter } from 'expo-router';
 import Checkbox from 'expo-checkbox';
 
@@ -77,16 +77,16 @@ export default function CriarConta() {
   return (
     <View style={styles.container}>
       {alertVisible && (
-        <Animated.View style={[styles.alertBox, { opacity: fadeAnim }]}> 
+        <Animated.View style={[styles.alertBox, { opacity: fadeAnim }]}>
           <Text style={styles.alertText}>Conta criada com sucesso!</Text>
         </Animated.View>
       )}
       {termsAlertVisible && (
-        <Animated.View style={[styles.alertBox, { opacity: termsFadeAnim }]}> 
+        <Animated.View style={[styles.alertBox, { opacity: termsFadeAnim }]}>
           <Text style={styles.alertText}>Você deve concordar com os Termos e Condições!</Text>
         </Animated.View>
       )}
-      
+
       <Text style={styles.title}>Criar Conta</Text>
       <TextInput style={styles.input} placeholder="Username" value={username} onChangeText={setUsername} />
       <TextInput style={styles.input} placeholder="Nome Completo" value={fullName} onChangeText={setFullName} />
@@ -103,16 +103,37 @@ export default function CriarConta() {
       <TextInput style={styles.input} placeholder="Senha" value={password} onChangeText={setPassword} secureTextEntry />
 
       <View style={styles.checkboxContainer}>
-        <Checkbox value={isChecked} onValueChange={setIsChecked} color={isChecked ? '#2B6CB0' : undefined} />
-        <Text style={styles.checkboxText}>Concordo com os <Text style={styles.termsText}>Termos & Condições</Text></Text>
-      </View>
+  <Checkbox 
+    value={isChecked} 
+    onValueChange={setIsChecked} 
+    color={isChecked ? '#2B6CB0' : undefined} 
+  />
+  <Text style={styles.checkboxText}>
+    Concordo com os{' '}
+    <TouchableOpacity onPress={() => router.push('/termos')}>
+      <Text style={styles.termsText}>Termos & Condições</Text>
+    </TouchableOpacity>
+  </Text>
+</View>
 
       <TouchableOpacity style={styles.button} onPress={handleRegister}>
         <Text style={styles.buttonText}>Criar Conta</Text>
       </TouchableOpacity>
+
+      {/* Ícones para login com Gmail e Facebook */}
+      <View style={styles.socialContainer}>
+        <TouchableOpacity>
+          <Image source={require('../assets/google-icon.png')} style={styles.socialIcon} />
+        </TouchableOpacity>
+        <TouchableOpacity>
+          <Image source={require('../assets/facebook-icon.png')} style={styles.socialIcon} />
+        </TouchableOpacity>
+      </View>
+      
     </View>
   );
 }
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -180,10 +201,20 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 8,
+    marginBottom: 10,
   },
   buttonText: {
     color: '#FFFFFF',
     fontSize: 18,
     fontWeight: 'bold',
+  },
+  socialContainer: {
+    flexDirection: 'row',
+    marginTop: 10,
+  },
+  socialIcon: {
+    width: 30,
+    height: 30,
+    marginHorizontal: 10,
   },
 });
