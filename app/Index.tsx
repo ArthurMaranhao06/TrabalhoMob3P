@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, Animated } from 'react-native';
 import { useRouter } from 'expo-router';
 import Checkbox from 'expo-checkbox';
 import { Ionicons } from '@expo/vector-icons';
@@ -8,12 +8,31 @@ export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isChecked, setIsChecked] = useState(false);
-  const [showEmail, setShowEmail] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [alertVisible, setAlertVisible] = useState(false);
+  const fadeAnim = useState(new Animated.Value(0))[0];
   const router = useRouter();
 
   const handleLogin = () => {
-    if (email === 'reergueradministracao@outlook.com.br' && password === '1234') {
+    if (!isChecked) {
+      setAlertVisible(true);
+      Animated.timing(fadeAnim, {
+        toValue: 1,
+        duration: 500,
+        useNativeDriver: true,
+      }).start();
+
+      setTimeout(() => {
+        Animated.timing(fadeAnim, {
+          toValue: 0,
+          duration: 500,
+          useNativeDriver: true,
+        }).start(() => setAlertVisible(false));
+      }, 5000);
+      return;
+    }
+
+    if (email === 'reergueradministracao@outlook.com.br' && password === 'reerguer') {
       router.push('/dashboard');
     } else {
       alert('Usuário ou senha incorretos!');
@@ -22,6 +41,12 @@ export default function Login() {
 
   return (
     <View style={styles.container}>
+      {alertVisible && (
+        <Animated.View style={[styles.alertBox, { opacity: fadeAnim }]}> 
+          <Text style={styles.alertText}>Você deve concordar com os termos de uso!</Text>
+        </Animated.View>
+      )}
+
       {/* Input para o e-mail */}
       <View style={styles.inputContainer}>
         <TextInput
@@ -56,7 +81,7 @@ export default function Login() {
           color={isChecked ? "#2B6CB0" : undefined}
         />
         <Text style={styles.checkboxText}>
-          Eu li e concordo com os <Text style={styles.termsText}>termos de uso</Text>
+          Eu li e concordo com os <Text style={styles.termsText}>termos de uso.</Text>
         </Text>
       </View>
 
@@ -68,9 +93,9 @@ export default function Login() {
         <Text style={styles.buttonText}>ENTRAR</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity style={styles.createAccount} onPress={() => router.push('/register')}>
-        <Text style={styles.buttonText}>CRIAR CONTA</Text>
-      </TouchableOpacity>
+      <TouchableOpacity style={styles.createAccount} onPress={() => router.push('/criar-conta')}>
+  <Text style={styles.buttonText}>CRIAR CONTA</Text>
+</TouchableOpacity>
 
       {/* Ícones para login com Gmail e Facebook */}
       <View style={styles.socialContainer}>
@@ -90,8 +115,25 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#E3F2FD', // Azul bem claro
+    backgroundColor: '#E3F2FD',
     paddingHorizontal: 20,
+  },
+  alertBox: {
+    position: 'absolute',
+    top: 50,
+    backgroundColor: 'white',
+    padding: 15,
+    borderRadius: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  alertText: {
+    color: '#2B6CB0',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
   inputContainer: {
     flexDirection: 'row',
@@ -100,7 +142,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#A0AEC0',
     borderRadius: 8,
-    backgroundColor: '#D0E7FF', // Azul claro diferente do fundo
+    backgroundColor: '#D0E7FF',
     marginBottom: 12,
     height: 50,
   },
@@ -158,8 +200,8 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   socialIcon: {
-    width: 30, // Diminuído para um tamanho menor
-    height: 30, // Mantendo proporcionalidade
+    width: 30,
+    height: 30,
     marginHorizontal: 10,
   },
   buttonText: {
