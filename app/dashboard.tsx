@@ -4,7 +4,7 @@ import { MaterialIcons } from '@expo/vector-icons';
 
 export default function DashboardScreen() {
   const router = useRouter();
-  const cidade = "São Paulo"; // Pode ser dinâmico futuramente
+  const cidade = "Recife"; // Pode ser dinâmico futuramente
 
   return (
     <View style={styles.container}>
@@ -23,7 +23,7 @@ export default function DashboardScreen() {
       <TouchableOpacity 
         style={styles.button} 
         onPress={() => router.push('/pedir-ajuda')}
-        activeOpacity={0.7} // Adiciona um efeito de clique
+        activeOpacity={0.7}
       >
         <Text style={styles.buttonText}>Pedir Ajuda</Text>
       </TouchableOpacity>
@@ -31,7 +31,7 @@ export default function DashboardScreen() {
       <TouchableOpacity 
         style={styles.button} 
         onPress={() => router.push('/oferecer-ajuda')}
-        activeOpacity={0.7} // Adiciona um efeito de clique
+        activeOpacity={0.7}
       >
         <Text style={styles.buttonText}>Oferecer Ajuda</Text>
       </TouchableOpacity>
@@ -39,7 +39,7 @@ export default function DashboardScreen() {
       <TouchableOpacity 
         style={styles.button} 
         onPress={() => router.push('/abrigos')}
-        activeOpacity={0.7} // Adiciona um efeito de clique
+        activeOpacity={0.7}
       >
         <Text style={styles.buttonText}>Abrigos</Text>
       </TouchableOpacity>
@@ -53,7 +53,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     padding: 20,
-    backgroundColor: '#f0f0f0',
+    backgroundColor: '#E6F4FA',  // Azul Claro (Fundo)
   },
   header: {
     position: 'absolute',
@@ -61,39 +61,55 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 10,
+    backgroundColor: '#0050C0',  // Azul Escuro
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
   },
   headerText: {
-    fontSize: 22,
+    fontSize: 24,
     fontWeight: 'bold',
-    color: '#333',
+    color: '#FFFFFF', // Branco
   },
   alertBox: {
-    backgroundColor: '#ff4d4d',
-    padding: 10,
-    borderRadius: 10,
-    marginBottom: 20,
+    backgroundColor: '#FF4D4D',  // Vermelho para o alerta
+    padding: 15,
+    borderRadius: 12,
+    marginBottom: 30,
+    width: '90%',
+    maxWidth: 350,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 6,
   },
   alertText: {
     color: 'white',
     fontWeight: 'bold',
     textAlign: 'center',
+    fontSize: 18,
   },
   button: {
-    backgroundColor: '#007bff',
-    padding: 15,
-    borderRadius: 10,
+    backgroundColor: '#2C78C4',  // Azul Médio (Botão)
+    paddingVertical: 15,
+    paddingHorizontal: 25,
+    borderRadius: 12,
     width: '80%',
     alignItems: 'center',
-    marginBottom: 10,
-    // Adicionando sombra para melhorar a aparência visual
+    marginBottom: 15,
+    // Sombra mais suave para os botões
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
+    shadowOffset: { width: 0, height: 5 },
+    shadowOpacity: 0.2,
+    shadowRadius: 6,
   },
   buttonText: {
     color: 'white',
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: 'bold',
   },
 });

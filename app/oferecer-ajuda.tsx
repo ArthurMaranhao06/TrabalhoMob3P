@@ -1,10 +1,31 @@
-import { View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
+import { View, Text, TextInput, Button, StyleSheet, Alert, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useFonts, Pacifico_400Regular } from '@expo-google-fonts/pacifico';
+import * as SplashScreen from 'expo-splash-screen';
+
+SplashScreen.preventAutoHideAsync(); // Impede que a tela de splash desapareça automaticamente
 
 export default function OferecerAjuda() {
   const router = useRouter();
   const [mensagem, setMensagem] = useState('');
+
+  const [fontsLoaded] = useFonts({
+    Pacifico: Pacifico_400Regular,
+  });
+
+  useEffect(() => {
+    async function hideSplash() {
+      if (fontsLoaded) {
+        await SplashScreen.hideAsync();
+      }
+    }
+    hideSplash();
+  }, [fontsLoaded]);
+
+  if (!fontsLoaded) {
+    return null;
+  }
 
   const handleEnviarAjuda = () => {
     if (mensagem.trim() === '') {
@@ -12,7 +33,7 @@ export default function OferecerAjuda() {
       return;
     }
     Alert.alert('Sucesso', 'Sua oferta de ajuda foi enviada!');
-    router.back(); // Voltar para a tela anterior
+    router.back();
   };
 
   return (
@@ -22,11 +43,14 @@ export default function OferecerAjuda() {
       <TextInput
         style={styles.input}
         placeholder="Digite sua mensagem..."
+        placeholderTextColor="#9BA2A8"
         value={mensagem}
         onChangeText={setMensagem}
         multiline
       />
-      <Button title="Enviar" onPress={handleEnviarAjuda} />
+      <TouchableOpacity style={styles.button} onPress={handleEnviarAjuda}>
+        <Text style={styles.buttonText}>Enviar</Text>
+      </TouchableOpacity>
     </View>
   );
 }
@@ -34,25 +58,47 @@ export default function OferecerAjuda() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#E6F4FA', // Azul Claro
     justifyContent: 'center',
     padding: 20,
   },
   title: {
-    fontSize: 24,
+    fontSize: 28,
+    fontFamily: 'sans-serif',
     fontWeight: 'bold',
-    marginBottom: 20,
+    color: '#0050C0',
     textAlign: 'center',
+    marginBottom: 20,
   },
+  
   label: {
     fontSize: 16,
-    marginBottom: 10,
+    color: '#000000', // Cinza Claro
+    marginBottom: 8,
   },
   input: {
-    height: 100,
-    borderColor: 'gray',
+    backgroundColor: '#AAD4FB',  // Fundo azul médio
+    borderColor: '#AAD4FB',
     borderWidth: 1,
-    marginBottom: 12,
-    paddingHorizontal: 8,
+    borderRadius: 8,
+    padding: 12,
+    fontSize: 16,
+    marginBottom: 16,
     textAlignVertical: 'top',
+    height: 120,
+    color: '#FFFFFF',            // Texto branco
+  },
+  
+  
+  button: {
+    backgroundColor: '#2C78C4', // Azul do botão
+    paddingVertical: 12,
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  buttonText: {
+    color: '#FFFFFF',           // Branco
+    fontSize: 16,
+    fontWeight: 'bold',
   },
 });
