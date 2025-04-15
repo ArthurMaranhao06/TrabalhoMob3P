@@ -69,7 +69,7 @@ export default function CriarConta() {
         useNativeDriver: true,
       }).start(() => {
         setAlertVisible(false);
-        router.push('/login');
+        router.push('/');
       });
     }, 3000);
   };

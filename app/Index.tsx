@@ -41,8 +41,11 @@ export default function Login() {
 
   return (
     <View style={styles.container}>
+      {/* Logo */}
+      <Image source={require('../assets/logo.png')} style={styles.logo} resizeMode="contain" />
+
       {alertVisible && (
-        <Animated.View style={[styles.alertBox, { opacity: fadeAnim }]}> 
+        <Animated.View style={[styles.alertBox, { opacity: fadeAnim }]}>
           <Text style={styles.alertText}>Você deve concordar com os Termos & Condições!</Text>
         </Animated.View>
       )}
@@ -74,18 +77,18 @@ export default function Login() {
       </View>
 
       <View style={styles.checkboxContainer}>
-  <Checkbox 
-    value={isChecked} 
-    onValueChange={setIsChecked} 
-    color={isChecked ? '#2B6CB0' : undefined} 
-  />
-  <Text style={styles.checkboxText}>
-    Concordo com os{' '}
-    <TouchableOpacity onPress={() => router.push('/termos')}>
-      <Text style={styles.termsText}>Termos & Condições</Text>
-    </TouchableOpacity>
-  </Text>
-</View>
+        <Checkbox
+          value={isChecked}
+          onValueChange={setIsChecked}
+          color={isChecked ? '#2B6CB0' : undefined}
+        />
+        <Text style={styles.checkboxText}>
+          Concordo com os{' '}
+          <TouchableOpacity onPress={() => router.push('/termos')}>
+            <Text style={styles.termsText}>Termos & Condições</Text>
+          </TouchableOpacity>
+        </Text>
+      </View>
 
       <TouchableOpacity onPress={() => router.push('/esqueci-senha')}>
         <Text style={styles.forgotPassword}>ESQUECI MINHA SENHA</Text>
@@ -96,8 +99,8 @@ export default function Login() {
       </TouchableOpacity>
 
       <TouchableOpacity style={styles.createAccount} onPress={() => router.push('/criar-conta')}>
-  <Text style={styles.buttonText}>CRIAR CONTA</Text>
-</TouchableOpacity>
+        <Text style={styles.buttonText}>CRIAR CONTA</Text>
+      </TouchableOpacity>
 
       {/* Ícones para login com Gmail e Facebook */}
       <View style={styles.socialContainer}>
@@ -119,6 +122,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#E3F2FD',
     paddingHorizontal: 20,
+  },
+  logo: {
+    width: 200,
+    height: 100,
+    marginBottom: 30,
   },
   alertBox: {
     position: 'absolute',

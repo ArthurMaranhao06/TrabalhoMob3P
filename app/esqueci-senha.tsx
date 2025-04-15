@@ -1,24 +1,67 @@
-import { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
+import { useState, useRef } from 'react';
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+  KeyboardAvoidingView,
+  Platform,
+  Animated,
+  Image
+} from 'react-native';
 import { useRouter } from 'expo-router';
 
 export default function EsqueciSenha() {
   const [email, setEmail] = useState('');
   const [emailEnviado, setEmailEnviado] = useState(false);
+  const [alertVisible, setAlertVisible] = useState(false);
+  const fadeAnim = useRef(new Animated.Value(0)).current;
   const router = useRouter();
 
   const handleEnviarLink = () => {
     if (!email) {
-      alert('Por favor, insira seu e-mail, telefone ou nome de usuário.');
+      setAlertVisible(true);
+      Animated.timing(fadeAnim, {
+        toValue: 1,
+        duration: 500,
+        useNativeDriver: true,
+      }).start(() => {
+        setTimeout(() => {
+          Animated.timing(fadeAnim, {
+            toValue: 0,
+            duration: 500,
+            useNativeDriver: true,
+          }).start(() => setAlertVisible(false));
+        }, 3000);
+      });
       return;
     }
+
     setEmailEnviado(true);
   };
 
   return (
-    <View style={styles.container}>
+    <KeyboardAvoidingView
+      style={styles.container}
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+    >
+      <Image
+        source={require('../assets/logo.png')}
+        style={styles.logo}
+        resizeMode="contain"
+      />
+
+      {alertVisible && (
+        <Animated.View style={[styles.alertBox, { opacity: fadeAnim }]}>
+          <Text style={styles.alertText}>
+            Por favor, insira seu e-mail, telefone ou nome de usuário.
+          </Text>
+        </Animated.View>
+      )}
+
       {!emailEnviado ? (
-        <View style={styles.formContainer}>
+        <View style={styles.card}>
           <Text style={styles.title}>Problemas para entrar?</Text>
           <Text style={styles.subtitle}>
             Insira o seu e-mail, telefone ou nome de usuário e enviaremos um link para você voltar a acessar sua conta.
@@ -26,107 +69,117 @@ export default function EsqueciSenha() {
           <TextInput
             style={styles.input}
             placeholder="E-mail, telefone ou nome de usuário"
+            placeholderTextColor="#666"
             value={email}
             onChangeText={setEmail}
           />
           <TouchableOpacity style={styles.button} onPress={handleEnviarLink}>
             <Text style={styles.buttonText}>Enviar link para login</Text>
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => router.push('/login')}>
-            <Text style={styles.voltarText}>Voltar ao login</Text>
-          </TouchableOpacity>
+          <TouchableOpacity onPress={() => router.push('/')}>
+  <Text style={styles.link}>Voltar ao login</Text>
+</TouchableOpacity>
         </View>
       ) : (
-        <View style={styles.alertContainer}>
-          <Text style={styles.alertTitle}>Email enviado</Text>
-          <Text style={styles.alertMessage}>
-            Enviamos um email para {email} com um link para você poder entrar novamente na sua conta.
+        <View style={styles.card}>
+          <Text style={styles.title}>Email enviado!</Text>
+          <Text style={styles.subtitle}>
+            Enviamos um email para <Text style={{ fontWeight: 'bold' }}>{email}</Text> com um link para você poder entrar novamente na sua conta.
           </Text>
-          <TouchableOpacity style={styles.okButton} onPress={() => router.push('/login')}>
-            <Text style={styles.okButtonText}>OK</Text>
-          </TouchableOpacity>
+          <TouchableOpacity style={styles.button} onPress={() => router.push('/')}>
+  <Text style={styles.buttonText}>OK</Text>
+</TouchableOpacity>
         </View>
       )}
-    </View>
+    </KeyboardAvoidingView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#E3F2FD',
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#fff',
     paddingHorizontal: 20,
   },
-  formContainer: {
+  logo: {
+    width: 200,
+    height: 100,
+    marginBottom: 30,
+  },
+  alertBox: {
+    position: 'absolute',
+    top: 50,
+    backgroundColor: 'white',
+    padding: 15,
+    borderRadius: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  alertText: {
+    color: '#2B6CB0',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  card: {
     width: '100%',
+    backgroundColor: '#fff',
+    borderRadius: 12,
+    padding: 24,
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 6,
+    elevation: 4,
     alignItems: 'center',
   },
   title: {
-    fontSize: 24,
+    fontSize: 22,
     fontWeight: 'bold',
-    marginBottom: 10,
+    color: '#1a202c',
+    textAlign: 'center',
+    marginBottom: 12,
   },
   subtitle: {
+    fontSize: 16,
+    color: '#4a5568',
     textAlign: 'center',
     marginBottom: 20,
-    color: '#6b6b6b',
   },
   input: {
     width: '100%',
     height: 50,
-    borderColor: '#ccc',
     borderWidth: 1,
+    borderColor: '#A0AEC0',
     borderRadius: 8,
-    paddingHorizontal: 10,
-    marginBottom: 10,
+    backgroundColor: '#D0E7FF',
+    paddingHorizontal: 12,
+    marginBottom: 16,
+    fontSize: 16,
+    color: '#2B6CB0',
   },
   button: {
     width: '100%',
     height: 50,
     backgroundColor: '#2B6CB0',
+    borderRadius: 8,
     justifyContent: 'center',
     alignItems: 'center',
-    borderRadius: 8,
-    marginBottom: 10,
+    marginBottom: 12,
   },
   buttonText: {
-    color: '#fff',
+    color: '#FFFFFF',
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: '600',
   },
-  voltarText: {
+  link: {
     color: '#2B6CB0',
     fontSize: 16,
-  },
-  alertContainer: {
-    alignItems: 'center',
-    padding: 20,
-    backgroundColor: '#fff',
-    borderRadius: 10,
-    elevation: 5,
-  },
-  alertTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginBottom: 10,
-  },
-  alertMessage: {
-    textAlign: 'center',
-    marginBottom: 20,
-  },
-  okButton: {
-    width: '100%',
-    height: 50,
-    backgroundColor: '#2B6CB0',
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 8,
-  },
-  okButtonText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: '500',
+    textDecorationLine: 'underline',
   },
 });
