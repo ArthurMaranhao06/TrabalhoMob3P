@@ -1,56 +1,43 @@
-import { View, Text, TextInput, Button, StyleSheet, Alert, TouchableOpacity } from 'react-native';
+import { View, Text, FlatList, StyleSheet, Alert, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
-import { useState, useEffect } from 'react';
-import { useFonts, Pacifico_400Regular } from '@expo-google-fonts/pacifico';
-import * as SplashScreen from 'expo-splash-screen';
+import { useState } from 'react';
 
-SplashScreen.preventAutoHideAsync(); // Impede que a tela de splash desapareça automaticamente
+type Pedido = {
+  tipo: string;
+  descricao: string;
+};
 
 export default function OferecerAjuda() {
   const router = useRouter();
-  const [mensagem, setMensagem] = useState('');
 
-  const [fontsLoaded] = useFonts({
-    Pacifico: Pacifico_400Regular,
-  });
+  const [pedidos, setPedidos] = useState<Pedido[]>([
+    { tipo: 'Alimentos', descricao: 'Precisamos de comida enlatada.' },
+    { tipo: 'Roupas', descricao: 'Roupas secas para família de 4 pessoas.' },
+    { tipo: 'Abrigo', descricao: 'Abrigo temporário para uma noite.' },
+  ]);
 
-  useEffect(() => {
-    async function hideSplash() {
-      if (fontsLoaded) {
-        await SplashScreen.hideAsync();
-      }
-    }
-    hideSplash();
-  }, [fontsLoaded]);
-
-  if (!fontsLoaded) {
-    return null;
-  }
-
-  const handleEnviarAjuda = () => {
-    if (mensagem.trim() === '') {
-      Alert.alert('Erro', 'Por favor, escreva uma mensagem antes de enviar.');
-      return;
-    }
-    Alert.alert('Sucesso', 'Sua oferta de ajuda foi enviada!');
-    router.back();
+  const handleAjudar = (tipo: string) => {
+    const msg = tipo === 'Abrigo' ? 'Voluntário confirmado!' : 'Doação confirmada!';
+    Alert.alert('Obrigado!', msg);
   };
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Oferecer Ajuda</Text>
-      <Text style={styles.label}>Escreva como você pode ajudar:</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Digite sua mensagem..."
-        placeholderTextColor="#9BA2A8"
-        value={mensagem}
-        onChangeText={setMensagem}
-        multiline
+      <FlatList
+        data={pedidos}
+        keyExtractor={(item, index) => index.toString()}
+        renderItem={({ item }) => (
+          <View style={styles.card}>
+            <Text style={styles.tipo}>{item.tipo}</Text>
+            <Text style={styles.descricao}>{item.descricao}</Text>
+            <TouchableOpacity style={styles.button} onPress={() => handleAjudar(item.tipo)}>
+              <Text style={styles.buttonText}>Ajudar</Text>
+            </TouchableOpacity>
+          </View>
+        )}
+        ListEmptyComponent={<Text style={styles.empty}>Nenhum pedido disponível no momento.</Text>}
       />
-      <TouchableOpacity style={styles.button} onPress={handleEnviarAjuda}>
-        <Text style={styles.buttonText}>Enviar</Text>
-      </TouchableOpacity>
     </View>
   );
 }
@@ -58,47 +45,54 @@ export default function OferecerAjuda() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#E6F4FA', // Azul Claro
-    justifyContent: 'center',
+    backgroundColor: '#E6F4FA',
     padding: 20,
+    paddingTop: 40,
   },
   title: {
     fontSize: 28,
-    fontFamily: 'sans-serif',
-    fontWeight: 'bold',
+    fontFamily: 'Arial',
     color: '#0050C0',
     textAlign: 'center',
     marginBottom: 20,
   },
-  
-  label: {
-    fontSize: 16,
-    color: '#000000', // Cinza Claro
-    marginBottom: 8,
+  card: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 10,
+    padding: 16,
+    marginBottom: 12,
+    elevation: 2,
   },
-  input: {
-    backgroundColor: '#AAD4FB',  // Fundo azul médio
-    borderColor: '#AAD4FB',
-    borderWidth: 1,
-    borderRadius: 8,
-    padding: 12,
-    fontSize: 16,
-    marginBottom: 16,
-    textAlignVertical: 'top',
-    height: 120,
-    color: '#FFFFFF',            // Texto branco
+  tipo: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    fontFamily: 'Arial',
+    color: '#2C78C4',
   },
-  
-  
+  descricao: {
+    fontSize: 16,
+    fontFamily: 'Arial',
+    color: '#333',
+    marginVertical: 8,
+  },
   button: {
-    backgroundColor: '#2C78C4', // Azul do botão
-    paddingVertical: 12,
-    borderRadius: 8,
+    backgroundColor: '#2C78C4',
+    paddingVertical: 10,
+    borderRadius: 6,
     alignItems: 'center',
+    marginTop: 8,
   },
   buttonText: {
-    color: '#FFFFFF',           // Branco
+    color: '#FFFFFF',
     fontSize: 16,
+    fontFamily: 'Arial',
     fontWeight: 'bold',
+  },
+  empty: {
+    textAlign: 'center',
+    fontSize: 16,
+    fontFamily: 'Arial',
+    color: '#999',
+    marginTop: 50,
   },
 });
