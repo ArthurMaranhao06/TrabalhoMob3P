@@ -33,7 +33,9 @@ export default function Login() {
     }
 
     if (email === 'reergueradministracao@outlook.com.br' && password === 'reerguer') {
-      router.push('/dashboard');
+      router.push('/dashboard/abrigos'); // Ou a tela que você quiser abrir por padrão
+
+
     } else {
       alert('Usuário ou senha incorretos!');
     }
