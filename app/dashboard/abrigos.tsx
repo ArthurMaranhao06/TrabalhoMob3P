@@ -9,7 +9,7 @@ import {
   Linking,
 } from 'react-native';
 import { FontAwesome5, Feather } from '@expo/vector-icons';
-
+import { useRouter } from 'expo-router';
 // Tipo para os itens de abrigo
 type Abrigo = {
   id: string;
@@ -22,8 +22,15 @@ type Abrigo = {
   longitude?: number;
 };
 
+type RootStackParamList = {
+  Termos: undefined;
+  // adicione outras rotas aqui se necessário
+};
+
 export default function AbrigosScreen() {
-  // Lista simulada de abrigos
+  // Lista sim
+   const router = useRouter();
+
   const abrigos: Abrigo[] = [
     {
       id: '1',
@@ -112,6 +119,7 @@ export default function AbrigosScreen() {
                     <Text style={styles.nome}>{item.nome}</Text>
                     <Text style={styles.endereco}>{item.endereco}</Text>
                   </View>
+                  
                   <Feather
                     name={expanded ? 'chevron-up' : 'chevron-down'}
                     size={22}
@@ -141,6 +149,17 @@ export default function AbrigosScreen() {
       ) : (
         <Text style={styles.noAbrigos}>Nenhum abrigo disponível no momento.</Text>
       )}
+
+
+ <View style={{ marginTop: 20, alignItems: 'center' }}>
+  <TouchableOpacity onPress={() => router.push('/termos')}>
+    <Text style={{ color: '#2C78C4', fontSize: 16, fontWeight: '600' }}>
+      Ver Termos de Uso
+    </Text>
+  </TouchableOpacity>
+</View>
+
+
     </View>
   );
 }
