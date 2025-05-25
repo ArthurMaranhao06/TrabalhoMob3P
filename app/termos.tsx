@@ -1,5 +1,7 @@
 import { View, Text, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
 import { useRouter } from 'expo-router';
+import { Stack } from 'expo-router';
+
 
 export default function Termos() {
   const router = useRouter();
@@ -51,6 +53,21 @@ export default function Termos() {
       <TouchableOpacity style={styles.button} onPress={() => router.back()}>
         <Text style={styles.buttonText}>Voltar</Text>
       </TouchableOpacity>
+
+      <Stack.Screen
+  options={{
+    title: 'Termos de Uso',
+    headerBackVisible: true, // mostra botão de voltar
+    headerTintColor: '#0050C0', // cor do botão voltar
+    headerStyle: {
+      backgroundColor: '#E3F2FD',
+    },
+    headerTitleStyle: {
+      fontWeight: 'bold',
+    },
+  }}
+/>
+
     </View>
   );
 }
