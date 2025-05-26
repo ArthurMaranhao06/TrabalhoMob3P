@@ -31,6 +31,15 @@ export default function DashboardLayout() {
           ),
         }}
       />
+      <Tabs.Screen
+        name="clima"
+        options={{
+          title: 'Clima',
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="partly-sunny" color={color} size={size} />
+          ),
+        }}
+      />
     </Tabs>
   );
 }

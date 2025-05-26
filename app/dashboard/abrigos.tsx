@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   Linking,
 } from 'react-native';
+
 import { FontAwesome5, Feather } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 // Tipo para os itens de abrigo
@@ -31,38 +32,88 @@ export default function AbrigosScreen() {
   // Lista sim
    const router = useRouter();
 
-  const abrigos: Abrigo[] = [
-    {
-      id: '1',
-      nome: 'Abrigo Esperança',
-      endereco: 'Rua das Flores, 123',
-      capacidade: '150 pessoas',
-      responsavel: 'Maria Silva',
-      telefone: '(81) 99999-1234',
-      latitude: -8.0476,
-      longitude: -34.8770,
-    },
-    {
-      id: '2',
-      nome: 'Centro de Apoio Sol',
-      endereco: 'Av. Central, 456',
-      capacidade: '200 pessoas',
-      responsavel: 'João Santos',
-      telefone: '(81) 98888-4567',
-      latitude: -8.0540,
-      longitude: -34.8888,
-    },
-    {
-      id: '3',
-      nome: 'Refúgio da Paz',
-      endereco: 'Travessa Azul, 789',
-      capacidade: '100 pessoas',
-      responsavel: 'Ana Costa',
-      telefone: '(81) 97777-7890',
-      latitude: -8.0600,
-      longitude: -34.8700,
-    },
-  ];
+ const abrigos: Abrigo[] = [
+  {
+    id: '1',
+    nome: 'Abrigo Esperança',
+    endereco: 'Rua das Flores, 123 - Santo Amaro, Recife',
+    capacidade: '150 pessoas',
+    responsavel: 'Maria Silva',
+    telefone: '(81) 99999-1234',
+    latitude: -8.0476,
+    longitude: -34.8770,
+  },
+  {
+    id: '2',
+    nome: 'Centro de Apoio Sol',
+    endereco: 'Av. Central, 456 - Casa Forte, Recife',
+    capacidade: '200 pessoas',
+    responsavel: 'João Santos',
+    telefone: '(81) 98888-4567',
+    latitude: -8.0540,
+    longitude: -34.8888,
+  },
+  {
+    id: '3',
+    nome: 'Refúgio da Paz',
+    endereco: 'Travessa Azul, 789 - Madalena, Recife',
+    capacidade: '100 pessoas',
+    responsavel: 'Ana Costa',
+    telefone: '(81) 97777-7890',
+    latitude: -8.0600,
+    longitude: -34.8700,
+  },
+  {
+    id: '4',
+    nome: 'Abrigo Boa Viagem',
+    endereco: 'Av. Conselheiro Aguiar, 1500 - Boa Viagem, Recife',
+    capacidade: '180 pessoas',
+    responsavel: 'Carlos Pereira',
+    telefone: '(81) 91234-5678',
+    latitude: -8.1234,
+    longitude: -34.9000,
+  },
+  {
+    id: '5',
+    nome: 'Casa de Apoio Santo Amaro',
+    endereco: 'Rua do Futuro, 350 - Santo Amaro, Recife',
+    capacidade: '130 pessoas',
+    responsavel: 'Fernanda Lima',
+    telefone: '(81) 99876-5432',
+    latitude: -8.0450,
+    longitude: -34.8800,
+  },
+  {
+    id: '6',
+    nome: 'Refúgio Jardim São Paulo',
+    endereco: 'Rua Padre Roma, 220 - Jardim São Paulo, Recife',
+    capacidade: '120 pessoas',
+    responsavel: 'Joana Martins',
+    telefone: '(81) 98765-4321',
+    latitude: -8.0250,
+    longitude: -34.9100,
+  },
+  {
+    id: '7',
+    nome: 'Abrigo Casa Amarela',
+    endereco: 'Av. Norte, 800 - Casa Amarela, Recife',
+    capacidade: '170 pessoas',
+    responsavel: 'Rafael Souza',
+    telefone: '(81) 96543-2109',
+    latitude: -8.0300,
+    longitude: -34.9500,
+  },
+  {
+    id: '8',
+    nome: 'Centro de Apoio Derby',
+    endereco: 'Rua Benfica, 400 - Derby, Recife',
+    capacidade: '140 pessoas',
+    responsavel: 'Mariana Alves',
+    telefone: '(81) 93456-7890',
+    latitude: -8.0600,
+    longitude: -34.9000,
+  },
+];
 
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [animar] = useState(new Animated.Value(1));
