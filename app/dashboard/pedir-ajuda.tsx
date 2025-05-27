@@ -1,11 +1,14 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { View, Text, TextInput, Alert, StyleSheet, ScrollView, TouchableOpacity, ActivityIndicator, Modal } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { CameraView, useCameraPermissions } from 'expo-camera';
+import { Button, Image } from 'react-native';
 
 type Pedido = {
   tipo: string;
   descricao: string;
+  fotoUri?: string;
 };
 
 export default function PedirAjudaScreen() {
@@ -19,9 +22,23 @@ export default function PedirAjudaScreen() {
   const [editTipo, setEditTipo] = useState('Alimentos');
   const [editDescricao, setEditDescricao] = useState('');
 
+  const [temPermissao, requisitarPermissao] = useCameraPermissions();
+const [mostrarCamera, setMostrarCamera] = useState(false);
+const [fotoUri, setFotoUri] = useState<string | null>(null);
+const cameraRef = useRef<any>(null);
+
+
   useEffect(() => {
     carregarPedidos();
   }, []);
+
+const tirarFoto = async () => {
+  if (cameraRef.current) {
+    const foto = await cameraRef.current.takePictureAsync();
+    setFotoUri(foto.uri);
+    setMostrarCamera(false);
+  }
+};
 
   const carregarPedidos = async () => {
     try {
@@ -50,11 +67,15 @@ export default function PedirAjudaScreen() {
       return;
     }
 
-    const novoPedido: Pedido = { tipo: tipoNecessidade, descricao };
+    const novoPedido: Pedido = { tipo: tipoNecessidade, descricao, 
+      fotoUri: fotoUri || undefined
+    };
+
     const novosPedidos = [...pedidos, novoPedido];
     setPedidos(novosPedidos);
     salvarPedidos(novosPedidos);
     setDescricao('');
+    setFotoUri(null);
 
     Alert.alert('Sucesso', 'Pedido enviado com sucesso!');
   };
@@ -76,7 +97,11 @@ export default function PedirAjudaScreen() {
     if (pedidoEditandoIndex === null) return;
 
     const novosPedidos = [...pedidos];
-    novosPedidos[pedidoEditandoIndex] = { tipo: editTipo, descricao: editDescricao };
+    novosPedidos[pedidoEditandoIndex] = {
+  ...novosPedidos[pedidoEditandoIndex],
+  tipo: editTipo,
+  descricao: editDescricao,
+};
     setPedidos(novosPedidos);
     salvarPedidos(novosPedidos);
 
@@ -110,6 +135,25 @@ export default function PedirAjudaScreen() {
         multiline
       />
 
+<TouchableOpacity style={styles.cameraButton} onPress={async () => {
+  const { granted } = await requisitarPermissao();
+  if (granted) {
+    setMostrarCamera(true);
+  } else {
+    Alert.alert('Permissão negada', 'Você precisa permitir acesso à câmera para tirar fotos.');
+  }
+}}>
+  <Text style={styles.cameraButtonText}>Abrir Câmera</Text>
+</TouchableOpacity>
+
+
+{fotoUri && (
+  <Image
+    source={{ uri: fotoUri }}
+    style={{ width: '100%', height: 200, marginVertical: 10, borderRadius: 8 }}
+  />
+)}
+
       <TouchableOpacity style={styles.button} onPress={handleEnviarPedido}>
         <Text style={styles.buttonText}>Enviar Pedido</Text>
       </TouchableOpacity>
@@ -123,6 +167,13 @@ export default function PedirAjudaScreen() {
             <View key={index} style={styles.pedidoItem}>
               <Text style={styles.pedidoTipo}>✅ {pedido.tipo}</Text>
               <Text style={styles.pedidoDescricao}>{pedido.descricao}</Text>
+              {pedido.fotoUri && (
+  <Image
+    source={{ uri: pedido.fotoUri }}
+    style={{ width: '100%', height: 150, marginTop: 10, borderRadius: 6 }}
+    resizeMode="cover"
+  />
+)}
 
               <View style={styles.botoes}>
                 <TouchableOpacity onPress={() => abrirModalEdicao(index)} style={styles.editarBtn}>
@@ -181,6 +232,16 @@ export default function PedirAjudaScreen() {
           </View>
         </View>
       </Modal>
+      {mostrarCamera && (
+  <Modal visible={true} animationType="slide">
+    <CameraView ref={cameraRef} style={{ flex: 1 }} facing="back">
+      <View style={{ flex: 1, justifyContent: 'flex-end', marginBottom: 20 }}>
+        <Button title="Tirar Foto" onPress={tirarFoto} />
+        <Button title="Cancelar" onPress={() => setMostrarCamera(false)} />
+      </View>
+    </CameraView>
+  </Modal>
+)}
     </ScrollView>
   );
 }
@@ -235,6 +296,20 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
   },
+  cameraButton: {
+  backgroundColor: '#2C78C4', // azul escuro igual ao "Enviar Pedido"
+  paddingVertical: 14,
+  borderRadius: 8,
+  alignItems: 'center',
+  justifyContent: 'center',
+  marginBottom: 20, // espaçamento entre os botões
+},
+cameraButtonText: {
+  color: '#FFFFFF',
+  fontSize: 16,
+  fontWeight: 'bold',
+},
+
   lista: {
     marginTop: 10,
   },
@@ -244,6 +319,7 @@ const styles = StyleSheet.create({
     color: '#0050C0',
     marginBottom: 10,
   },
+  
   pedidoItem: {
     backgroundColor: '#FFFFFF',
     padding: 12,

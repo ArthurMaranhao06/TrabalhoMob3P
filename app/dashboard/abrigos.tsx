@@ -329,7 +329,7 @@ locationBox: {
   bottom: 20,  // Mantém no canto inferior
   left: 20,    // Agora alinha à esquerda
   backgroundColor: '#D6ECFA',
-  padding: 10,
+  padding: 4,
   borderRadius: 8,
   shadowColor: '#000',
   shadowOffset: { width: 0, height: 2 },
