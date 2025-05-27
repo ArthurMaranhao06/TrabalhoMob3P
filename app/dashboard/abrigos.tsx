@@ -1,16 +1,10 @@
-import React, { useState } from 'react';
-import {
-  View,
-  Text,
-  FlatList,
-  StyleSheet,
-  Animated,
-  TouchableOpacity,
-  Linking,
-} from 'react-native';
-
+import React, { useState, useEffect } from 'react';
+import { View, Text, FlatList, StyleSheet, Animated, TouchableOpacity, Linking, } from 'react-native';
 import { FontAwesome5, Feather } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
+import * as Location from 'expo-location';
+import { ActivityIndicator } from 'react-native';
+
 // Tipo para os itens de abrigo
 type Abrigo = {
   id: string;
@@ -117,6 +111,33 @@ export default function AbrigosScreen() {
 
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [animar] = useState(new Animated.Value(1));
+  const [location, setLocation] = useState<Location.LocationObject | null>(null);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  
+const abrirLocalizacaoAtualNoMapa = () => {
+  if (location) {
+    const { latitude, longitude } = location.coords;
+    const url = `https://www.google.com/maps/search/?api=1&query=${latitude},${longitude}`;
+    Linking.openURL(url);
+  }
+};
+
+
+useEffect(() => {
+    (async () => {
+      // Solicita permissão
+      const { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== 'granted') {
+        setErrorMsg('Permissão para acessar localização negada');
+        return;
+      }
+
+      // Obtém a localização atual
+      const loc = await Location.getCurrentPositionAsync({});
+      setLocation(loc);
+    })();
+  }, []);
+
 
   const handlePressIn = () => {
     Animated.spring(animar, {
@@ -210,6 +231,19 @@ export default function AbrigosScreen() {
   </TouchableOpacity>
 </View>
 
+  <TouchableOpacity style={styles.locationBox} onPress={abrirLocalizacaoAtualNoMapa} activeOpacity={0.8}>
+  {errorMsg ? (
+    <Text style={styles.locationText}>{errorMsg}</Text>
+  ) : location ? (
+    <>
+      <Text style={styles.locationText}>Latitude: {location.coords.latitude.toFixed(4)}</Text>
+      <Text style={styles.locationText}>Longitude: {location.coords.longitude.toFixed(4)}</Text>
+      <Text style={[styles.locationText, { fontSize: 11, marginTop: 4 }]}>Toque para abrir no mapa</Text>
+    </>
+  ) : (
+    <ActivityIndicator size="small" color="#0050C0" />
+  )}
+</TouchableOpacity>
 
     </View>
   );
@@ -289,4 +323,25 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginTop: 20,
   },
+
+locationBox: {
+  position: 'absolute',
+  bottom: 20,  // Mantém no canto inferior
+  left: 20,    // Agora alinha à esquerda
+  backgroundColor: '#D6ECFA',
+  padding: 10,
+  borderRadius: 8,
+  shadowColor: '#000',
+  shadowOffset: { width: 0, height: 2 },
+  shadowOpacity: 0.2,
+  shadowRadius: 4,
+  elevation: 4,
+},
+
+  locationText: {
+    fontSize: 12,
+    color: '#0050C0',
+    fontWeight: '600',
+  },
+
 });
